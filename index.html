@@ -5,7 +5,7 @@
   PRODUCT REASON
   This page has one job: get UK small-business owners to join the pilot
   waitlist for the AI marketing agent built in ~/Projects/ai-marketing-agent.
-  It also serves as the company's public web presence (Claude for Startups and
+  It is also the company's public web presence (Claude for Startups and
   similar programmes require a live website on the same domain as the company
   email, cagri@nascencesolution.com).
 
@@ -21,6 +21,10 @@
   TECHNICAL NOTES
   - Plain HTML/CSS/JS, no framework (owner preference: vanilla over React).
   - Hosted on GitHub Pages under the custom domain nascencesolution.com.
+  - Light AND dark themes (assets/styles.css). Declaring both in
+    <meta name="color-scheme"> matters: browsers with "auto dark mode" force-
+    invert pages that only declare light, which turned the first version's ad
+    headlines pink. A page that ships its own dark theme is left alone.
   - Page loads make no third-party requests: fonts are self-hosted and there
     is no analytics, so the privacy notice can truthfully say "no cookies, no
     tracking". The only external call is the waitlist POST to Google Forms,
@@ -45,8 +49,9 @@
   <title>Nascence | AI marketing agent for UK small businesses</title>
   <meta name="description" content="An AI marketing agent that runs your Google Ads, website, social posts, email and search content, and learns which versions work. Join the pilot waitlist.">
   <link rel="canonical" href="https://nascencesolution.com/">
-  <meta name="theme-color" content="#F4F6F2">
-  <meta name="color-scheme" content="light">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#F4F6F2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0D1612" media="(prefers-color-scheme: dark)">
 
   <!-- Open Graph: how the link looks when pasted into WhatsApp, LinkedIn, Slack.
        No og:image yet: an image needs real product screenshots, which are a
@@ -69,6 +74,23 @@
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
+  <!-- Inline icon sprite. One definition per icon, reused with <use>, so the
+       page stays a single request and icons inherit text colour (currentColor)
+       in both themes. Simple 24px line icons drawn for this page. -->
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <symbol id="i-ads" viewBox="0 0 24 24"><path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1Z"/><path d="M15 9a4 4 0 0 1 0 6M18 6a8 8 0 0 1 0 12"/></symbol>
+    <symbol id="i-page" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 13h8M8 16h5"/></symbol>
+    <symbol id="i-social" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/><path d="M9 11h6M9 14h4"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5M9 11h4M11 9v4"/></symbol>
+    <symbol id="i-card" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h3"/></symbol>
+    <symbol id="i-limit" viewBox="0 0 24 24"><path d="M4 18a8 8 0 1 1 16 0"/><path d="m12 18 4-6"/><path d="M4 18h16"/></symbol>
+    <symbol id="i-toggle" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="10" rx="5"/><circle cx="16" cy="12" r="3"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6l-8-3Z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></symbol>
+    <symbol id="i-tick" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  </svg>
+
   <header class="site-header">
     <div class="wrap header-row">
       <a class="wordmark" href="/" aria-label="Nascence home">
@@ -80,7 +102,11 @@
         </svg>
         <span>Nascence</span>
       </a>
-      <a class="header-cta" href="#join">Join the waitlist</a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="#how">How it works</a>
+        <a href="#pricing">Pricing</a>
+        <a class="button button-small" href="#join" data-focus-email>Join the waitlist</a>
+      </nav>
     </div>
   </header>
 
@@ -93,8 +119,12 @@
     <section class="hero" aria-labelledby="hero-title">
       <div class="wrap hero-grid">
         <div class="hero-copy">
-          <h1 id="hero-title">An AI marketing agent that runs your ads, and learns which ones work</h1>
-          <p class="lead">Built for UK small businesses that can't justify a £1,000-a-month agency. Describe your business once. It plans the campaign, writes the ads, builds the page they land on, publishes, and measures what happened.</p>
+          <!-- Status, not decoration: the product is in a pilot phase
+               (business plan §9.1), and this is what the form is for. -->
+          <p class="status-pill"><span class="status-dot" aria-hidden="true"></span>Pilot waitlist open for UK businesses</p>
+
+          <h1 id="hero-title">An AI marketing agent that runs your ads and learns what works</h1>
+          <p class="lead">For small businesses that can't justify a £1,000-a-month agency. Describe your business once. It plans the campaign, writes the ads, builds the page they land on, publishes, and measures what happened.</p>
 
           <!-- WAITLIST FORM (posts to a Google Form owned by the founder's Google account)
                WHY GOOGLE FORMS: free, no extra account to create, and the
@@ -118,15 +148,21 @@
               <label>Leave this empty <input id="hp-company" tabindex="-1" autocomplete="off"></label>
             </p>
 
-            <div class="field">
-              <label for="email">Work email</label>
-              <input id="email" name="entry.371359660" type="email" required maxlength="254"
-                     autocomplete="email" inputmode="email" spellcheck="false"
-                     placeholder="you@yourbusiness.co.uk" aria-describedby="email-error">
-              <p id="email-error" class="field-error" hidden></p>
+            <!-- Email and button share one row on wide screens: the shortest
+                 possible path to joining. The website field is optional and
+                 visually secondary. -->
+            <div class="waitlist-row">
+              <div class="field field-grow">
+                <label class="visually-hidden" for="email">Work email</label>
+                <input id="email" name="entry.371359660" type="email" required maxlength="254"
+                       autocomplete="email" inputmode="email" spellcheck="false"
+                       placeholder="Your work email" aria-describedby="email-error">
+              </div>
+              <button class="button" type="submit">Join the waitlist</button>
             </div>
+            <p id="email-error" class="field-error" hidden></p>
 
-            <div class="field">
+            <div class="field field-secondary">
               <label for="website">Business website <span class="optional">(optional)</span></label>
               <!-- type="text", not type="url": owners type "mysite.co.uk" without
                    https://, and type="url" would reject that. main.js normalises it. -->
@@ -136,10 +172,17 @@
               <p id="website-error" class="field-error" hidden></p>
             </div>
 
-            <button class="button" type="submit">Join the waitlist</button>
-            <p class="form-note">We're starting with a small pilot group of UK businesses and will email you when there's a place. Ask us to delete your details any time. <a href="/privacy/">Privacy notice</a></p>
+            <p class="form-note">We'll email you when there's a place in the pilot. Ask us to delete your details any time. <a href="/privacy/">Privacy notice</a></p>
             <p class="form-status" role="status" aria-live="polite"></p>
           </form>
+
+          <!-- Three real controls (ADR-0004 direct billing; SpendCap) that
+               answer the first objection before the visitor scrolls. -->
+          <ul class="hero-points">
+            <li><svg class="tick" aria-hidden="true"><use href="#i-tick"/></svg>Your own Google Ads account and card</li>
+            <li><svg class="tick" aria-hidden="true"><use href="#i-tick"/></svg>No markup on ad spend</li>
+            <li><svg class="tick" aria-hidden="true"><use href="#i-tick"/></svg>A spending limit only you can raise</li>
+          </ul>
         </div>
 
         <!-- THE EXPERIMENT ILLUSTRATION
@@ -151,7 +194,7 @@
              caption says so. -->
         <figure class="experiment" aria-labelledby="experiment-caption">
           <div class="experiment-head">
-            <p class="experiment-title">Three versions of one ad</p>
+            <p class="experiment-title">One ad, three versions</p>
             <p class="experiment-week" aria-hidden="true">Week <span data-week>4</span> of 4</p>
           </div>
 
@@ -169,7 +212,7 @@
                  view already shows the end state; main.js removes and re-adds it
                  while playing the week-by-week sequence. -->
             <li class="ad is-leading" data-ad="b">
-              <p class="ad-angle">Version B leads with the price</p>
+              <p class="ad-angle">Version B leads with the price <span class="leading-label">Getting most budget</span></p>
               <div class="ad-card">
                 <p class="ad-meta"><span class="ad-sponsored">Sponsored</span> yourjoinery.co.uk</p>
                 <p class="ad-title">Fitted Wardrobes, Fixed Quote | No Hidden Extras</p>
@@ -189,7 +232,7 @@
           </ol>
 
           <figcaption id="experiment-caption">
-            The bars show each version's share of the budget. As results come in, the agent moves budget toward the version people respond to. This is an illustration, not data from a real business.
+            Bars show each version's share of the budget, which moves toward the version people respond to. Illustration, not data from a real business.
             <button class="replay" type="button" data-replay hidden>Replay</button>
           </figcaption>
         </figure>
@@ -202,29 +245,37 @@
          to what the code does today; see the README of the product repo. -->
     <section class="section" aria-labelledby="does-title">
       <div class="wrap">
-        <h2 id="does-title">What it runs for you</h2>
-        <dl class="channels">
-          <div class="channel">
-            <dt>Google Ads</dt>
-            <dd>Splits the budget you set, writes the ads, sends them to Google and counts the enquiries they bring in.</dd>
-          </div>
-          <div class="channel">
-            <dt>A page for your ads</dt>
-            <dd>Builds the page your ads send people to, written from what you've confirmed about your business. You can change any word on it.</dd>
-          </div>
-          <div class="channel">
-            <dt>Social posts</dt>
-            <dd>Writes and publishes posts in your voice, then checks how each one did.</dd>
-          </div>
-          <div class="channel">
-            <dt>Email</dt>
-            <dd>Writes your campaigns and tracks which ones people open and click.</dd>
-          </div>
-          <div class="channel">
-            <dt>Search and AI answers</dt>
-            <dd>Writes articles for search, and checks every week whether AI assistants mention your business when people ask.</dd>
-          </div>
-        </dl>
+        <div class="section-head">
+          <h2 id="does-title">One agent, five channels</h2>
+          <p class="section-lead">The work an agency would split across several people, done from one brief about your business.</p>
+        </div>
+        <ul class="feature-grid">
+          <li class="feature">
+            <svg class="icon" aria-hidden="true"><use href="#i-ads"/></svg>
+            <h3>Google Ads</h3>
+            <p>Splits the budget you set, writes the ads, sends them to Google and counts the enquiries they bring in.</p>
+          </li>
+          <li class="feature">
+            <svg class="icon" aria-hidden="true"><use href="#i-page"/></svg>
+            <h3>A page for your ads</h3>
+            <p>Builds the page your ads send people to, from what you've confirmed about your business. You can change any word.</p>
+          </li>
+          <li class="feature">
+            <svg class="icon" aria-hidden="true"><use href="#i-social"/></svg>
+            <h3>Social posts</h3>
+            <p>Writes and publishes posts in your voice, then checks how each one did.</p>
+          </li>
+          <li class="feature">
+            <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
+            <h3>Email</h3>
+            <p>Writes your campaigns and tracks which ones people open and click.</p>
+          </li>
+          <li class="feature">
+            <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+            <h3>Search and AI answers</h3>
+            <p>Writes articles for search, and checks each week whether AI assistants mention your business.</p>
+          </li>
+        </ul>
       </div>
     </section>
 
@@ -240,7 +291,10 @@
           <!-- The only measured figure on the page. Wording mirrors README.md:
                "74–91% of the achievable gap ... mean 83.5% ... Simulator figures —
                the algorithm converging, not a client result". -->
-          <p class="evidence">Tested before it touches your money: against a market simulator built from published 2026 advertising benchmarks, the agent captured on average 83.5% of the gap between choosing ads at random and the best option available (five runs, 74% to 91%). This is a simulation, not a result from a real business.</p>
+          <div class="evidence">
+            <p class="evidence-figure">83.5%</p>
+            <p>of the gap between choosing ads at random and the best option, captured on average in testing against a market simulator built from published 2026 advertising benchmarks (five runs, 74% to 91%). A simulation, not a result from a real business.</p>
+          </div>
         </div>
         <div class="dimensions" aria-label="What changes between versions of an ad">
           <p class="dimensions-title">What changes between versions</p>
@@ -269,29 +323,37 @@
          the "never invent" taxonomy guidance, and the encrypted credential vault. -->
     <section class="section" aria-labelledby="control-title">
       <div class="wrap">
-        <h2 id="control-title">You stay in charge of the money</h2>
-        <dl class="controls">
-          <div class="control">
-            <dt>Your account, your card</dt>
-            <dd>Ads run on your own Google Ads account and Google bills you directly. We never hold your ad money and never add a markup.</dd>
-          </div>
-          <div class="control">
-            <dt>A limit it can't raise</dt>
-            <dd>The agent works within the monthly budget you set. It can't raise that limit, connect an account or add a payment method. Those always need you.</dd>
-          </div>
-          <div class="control">
-            <dt>Autopilot, or your approval</dt>
-            <dd>Let it publish on its own, or have every ad and post wait for your approval first.</dd>
-          </div>
-          <div class="control">
-            <dt>Nothing made up</dt>
-            <dd>It writes from the business profile you confirmed. It won't invent reviews, quotes or results.</dd>
-          </div>
-          <div class="control">
-            <dt>Logins kept off the page</dt>
-            <dd>Access to your accounts is stored encrypted on our servers and is never sent to a browser.</dd>
-          </div>
-        </dl>
+        <div class="section-head">
+          <h2 id="control-title">You stay in charge of the money</h2>
+          <p class="section-lead">An agent that spends money needs limits it can't talk its way around. These are built in, not settings it can change.</p>
+        </div>
+        <ul class="card-grid">
+          <li class="card">
+            <svg class="icon" aria-hidden="true"><use href="#i-card"/></svg>
+            <h3>Your account, your card</h3>
+            <p>Ads run on your own Google Ads account and Google bills you directly. We never hold your ad money and never add a markup.</p>
+          </li>
+          <li class="card">
+            <svg class="icon" aria-hidden="true"><use href="#i-limit"/></svg>
+            <h3>A limit it can't raise</h3>
+            <p>It works within the monthly budget you set. It can't raise that limit, connect an account or add a payment method.</p>
+          </li>
+          <li class="card">
+            <svg class="icon" aria-hidden="true"><use href="#i-toggle"/></svg>
+            <h3>Autopilot, or your approval</h3>
+            <p>Let it publish on its own, or have every ad and post wait for your approval first.</p>
+          </li>
+          <li class="card">
+            <svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>
+            <h3>Nothing made up</h3>
+            <p>It writes from the business profile you confirmed. It won't invent reviews, quotes or results.</p>
+          </li>
+          <li class="card">
+            <svg class="icon" aria-hidden="true"><use href="#i-lock"/></svg>
+            <h3>Logins kept off the page</h3>
+            <p>Access to your accounts is stored encrypted on our servers and never sent to a browser.</p>
+          </li>
+        </ul>
       </div>
     </section>
 
@@ -299,9 +361,11 @@
          A genuine sequence (onboarding order in the product: URL -> profile
          extraction -> owner confirmation -> budget/spend cap -> weekly cycle
          and monthly planning), so numbered steps are appropriate here. -->
-    <section class="section section-tint" aria-labelledby="steps-title">
+    <section class="section section-tint" id="how" aria-labelledby="steps-title">
       <div class="wrap">
-        <h2 id="steps-title">How it starts</h2>
+        <div class="section-head">
+          <h2 id="steps-title">How it starts</h2>
+        </div>
         <ol class="steps">
           <li>
             <h3>Point it at your website</h3>
@@ -317,7 +381,7 @@
           </li>
           <li>
             <h3>It gets to work</h3>
-            <p>Each week it writes, publishes, measures and shifts effort toward what's working. Each month it re-plans how the budget is split.</p>
+            <p>Each week it writes, publishes, measures and shifts effort toward what's working. Each month it re-plans the split.</p>
           </li>
         </ol>
       </div>
@@ -325,63 +389,65 @@
 
     <!-- WHO IT'S FOR — business plan §3.3 target customer and priority sectors. -->
     <section class="section" aria-labelledby="who-title">
-      <div class="wrap prose">
-        <h2 id="who-title">Who it's for</h2>
-        <p>Owner-run UK businesses spending roughly £100 to £500 a month on marketing, who can't justify an agency: trades and home services, professional services, hospitality, independent shops and small online stores.</p>
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="who-title">Who it's for</h2>
+          <p class="section-lead">Owner-run UK businesses spending roughly £100 to £500 a month on marketing, who can't justify an agency.</p>
+        </div>
+        <ul class="sector-list">
+          <li>Trades and home services</li>
+          <li>Professional services</li>
+          <li>Hospitality</li>
+          <li>Independent shops</li>
+          <li>Small online stores</li>
+        </ul>
       </div>
     </section>
 
     <!-- PLANNED PRICING — business plan §8.1 tiers. Labelled "planned" on
          purpose: prices are not final (ADR-0004 "to be revisited before launch")
          and nobody is charged by joining the waitlist. -->
-    <section class="section section-tint" aria-labelledby="pricing-title">
+    <section class="section section-tint" id="pricing" aria-labelledby="pricing-title">
       <div class="wrap">
-        <h2 id="pricing-title">Planned pricing</h2>
-        <div class="table-scroll" tabindex="0" role="region" aria-labelledby="pricing-title">
-          <table class="pricing">
-            <thead>
-              <tr>
-                <th scope="col">Plan</th>
-                <th scope="col">What the agent runs</th>
-                <th scope="col">Per month</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">Presence</th>
-                <td>A website, and your social posts</td>
-                <td>£39</td>
-              </tr>
-              <tr>
-                <th scope="row">Growth</th>
-                <td>Social posts, articles and search</td>
-                <td>£99</td>
-              </tr>
-              <tr>
-                <th scope="row">Full funnel</th>
-                <td>Every channel, including Google Ads</td>
-                <td>£249</td>
-              </tr>
-              <tr>
-                <th scope="row">Export</th>
-                <td>Every channel, across several countries and languages</td>
-                <td>£449</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="section-head">
+          <h2 id="pricing-title">Planned pricing</h2>
+          <p class="section-lead">Planned launch prices, which may change before launch. Joining the waitlist costs nothing. Ad spend is paid to Google directly, on top of the plan.</p>
         </div>
-        <p class="table-note">These are planned launch prices and may change before launch. Joining the waitlist costs nothing. Your ad spend is paid to Google directly, on top of the plan.</p>
+        <ul class="price-grid">
+          <li class="price-card">
+            <h3>Presence</h3>
+            <p class="price"><span class="price-amount">£39</span> a month</p>
+            <p>A website, and your social posts.</p>
+          </li>
+          <li class="price-card">
+            <h3>Growth</h3>
+            <p class="price"><span class="price-amount">£99</span> a month</p>
+            <p>Social posts, articles and search.</p>
+          </li>
+          <li class="price-card price-card-featured">
+            <h3>Full funnel</h3>
+            <p class="price"><span class="price-amount">£249</span> a month</p>
+            <p>Every channel, including Google Ads.</p>
+          </li>
+          <li class="price-card">
+            <h3>Export</h3>
+            <p class="price"><span class="price-amount">£449</span> a month</p>
+            <p>Every channel, across several countries and languages.</p>
+          </li>
+        </ul>
       </div>
     </section>
 
     <!-- CLOSING CALL TO ACTION — returns to the single hero form rather than
          duplicating it, so there is one form to maintain and one set of
          Google entry IDs to keep in sync. -->
-    <section class="section closing" aria-labelledby="closing-title">
-      <div class="wrap prose">
-        <h2 id="closing-title">Join the pilot</h2>
-        <p>We're onboarding a small group of UK businesses first. Leave your email and we'll get in touch when there's a place.</p>
-        <a class="button" href="#join" data-focus-email>Join the waitlist</a>
+    <section class="section" aria-labelledby="closing-title">
+      <div class="wrap">
+        <div class="closing">
+          <h2 id="closing-title">Join the pilot</h2>
+          <p>We're onboarding a small group of UK businesses first. Leave your email and we'll be in touch when there's a place.</p>
+          <a class="button" href="#join" data-focus-email>Join the waitlist</a>
+        </div>
       </div>
     </section>
   </main>

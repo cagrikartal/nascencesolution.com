@@ -3,30 +3,30 @@
 
   DESIGN INTENT (why it looks like this)
   - Audience: UK small-business owners (joiners, cafés, accountants, shops).
-    They need to trust it with ad money, so the page is calm, readable and
-    plain. All the boldness goes into one place: the hero "experiment" that
-    shows three ad versions with budget moving between them. Everything else
-    stays quiet.
-  - Palette: "new growth". Deep green ink on a cool, faintly green paper, with
-    one marigold accent reserved for the winning ad version. Marigold means
-    "this one is winning" and is used nowhere else.
+    They need to trust it with ad money, so the page is calm and readable,
+    with the boldness spent in one place: the hero "experiment" showing three
+    ad versions with budget moving between them.
+  - Palette: "new growth". Deep green ink, leaf green for actions, and one
+    marigold accent reserved for the winning ad version. Marigold means "this
+    one is winning" and appears nowhere else.
+  - Two real themes. Light follows the visitor's system setting by default and
+    dark is a designed theme, not an inversion. Declaring both (here and in the
+    color-scheme meta tag) stops Chrome's "auto dark mode" from force-inverting
+    the page. That inversion turned the first version's ad headlines pink and
+    was the main reason it looked broken.
   - Type: one family, Schibsted Grotesk (SIL Open Font License, self-hosted in
-    /fonts so no request goes to Google). The ad cards deliberately use Arial
-    because that is what real Google search ads render in, which makes the
-    illustration instantly recognisable.
-  - Type scale follows the classic progression from The Elements of
-    Typographic Style (14 / 16 / 18 / 21 / 24 / 36 / 48 / 60 px).
+    /fonts so no request goes to Google). The ad cards use Arial because real
+    Google search ads do, which makes the illustration instantly recognisable.
 
   CSS STRUCTURE
-  Tokens -> base -> layout helpers -> components, in source order. Components
-  use single-class selectors so specificity stays flat and section spacing
-  can't be accidentally cancelled by a more specific rule.
+  Fonts -> tokens (light, then dark) -> base -> layout -> components, in that
+  order. Components use single-class selectors so specificity stays flat.
 */
 
 /* ---------- Fonts ---------- */
 
 /* Latin covers English copy; latin-ext covers names with accents (e.g. Ç, ğ)
-   that waitlist users might type and that we may later show back to them. */
+   that waitlist users might type and that we may show back to them. */
 @font-face {
   font-family: "Schibsted Grotesk";
   font-style: normal;
@@ -44,40 +44,83 @@
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
-/* ---------- Tokens ---------- */
+/* ---------- Tokens: light theme ---------- */
 
 :root {
-  /* Colour. Contrast checked against --paper and --tint:
-     --ink 15.6:1, --ink-soft 6.9:1, --leaf 5.3:1 (all pass WCAG AA for body text). */
-  --paper: #F4F6F2;      /* page background: cool off-white with a hint of green */
-  --tint: #E8EEE5;       /* alternate section background, to separate topics without rules */
-  --card: #FFFFFF;       /* ad cards: real search results sit on white */
-  --ink: #10231C;        /* text: deep green-black, softer than pure black */
-  --ink-soft: #4A5A52;   /* secondary text */
-  --leaf: #2C6E47;       /* links, buttons, the seedling mark */
-  --leaf-deep: #1E5234;  /* button hover/active */
-  --rule: #CFD9CC;       /* hairlines and input borders */
-  --marigold: #E9A62B;   /* the winning ad version, and nothing else */
-  --marigold-soft: #FBEFD6;
-  --error: #A3261B;      /* form errors: 6.6:1 on paper */
+  color-scheme: light dark;
 
-  /* Type */
+  --paper: #F4F6F2;        /* page background */
+  --tint: #EAF0E7;         /* alternate sections */
+  --surface: #FFFFFF;      /* cards and panels */
+  --surface-2: #F1F5EF;    /* icon tiles, inputs on panels */
+  --ink: #10231C;          /* main text: 15.6:1 on paper */
+  --ink-soft: #4A5A52;     /* secondary text: 6.9:1 */
+  --leaf: #2C6E47;         /* links, icons: 5.3:1 */
+  --button: #2C6E47;       /* primary button background */
+  --button-hover: #1E5234;
+  --button-ink: #FFFFFF;
+  --rule: #D5DED2;         /* borders */
+  --rule-strong: #B9C8B5;
+  --marigold: #E9A62B;     /* the winning ad version, and nothing else */
+  --marigold-soft: #FBEFD6;
+  --error: #A3261B;
+  --shadow: 0 1px 2px rgba(16, 35, 28, 0.06), 0 8px 24px rgba(16, 35, 28, 0.06);
+
+  /* Google search ad colours (light) so the illustration reads as a real ad. */
+  --ad-bg: #FFFFFF;
+  --ad-title: #1A0DAB;
+  --ad-text: #202124;
+  --ad-desc: #4D5156;
+  --bar-track: rgba(16, 35, 28, 0.08);
+
   --font: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-ad: Arial, "Helvetica Neue", Helvetica, sans-serif;
-  --step--1: 0.875rem;   /* 14 */
-  --step-0: 1rem;        /* 16 */
-  --step-1: 1.125rem;    /* 18: body */
-  --step-2: 1.3125rem;   /* 21 */
-  --step-3: 1.5rem;      /* 24 */
-  --step-4: clamp(1.75rem, 1.2rem + 2vw, 2.25rem);   /* 28 -> 36: section headings */
-  --step-5: clamp(2.25rem, 1.2rem + 4.2vw, 3.75rem); /* 36 -> 60: hero headline */
 
-  /* Space and shape */
+  /* Type scale (14 / 16 / 18 / 21 / 24 / 36 / 56 px). */
+  --step--1: 0.875rem;
+  --step-0: 1rem;
+  --step-1: 1.125rem;
+  --step-2: 1.3125rem;
+  --step-3: 1.5rem;
+  --step-4: clamp(1.875rem, 1.3rem + 2vw, 2.5rem);
+  --step-5: clamp(2.375rem, 1.5rem + 3.4vw, 3.625rem);
+
   --gutter: clamp(1rem, 4vw, 2.5rem);
-  --section-space: clamp(3.5rem, 8vw, 6.5rem);
-  --measure: 38rem;      /* ~65-70 characters at body size */
-  --radius-s: 6px;       /* inputs, chips */
-  --radius-m: 10px;      /* ad cards, the experiment panel */
+  --section-space: clamp(4rem, 9vw, 7rem);
+  --measure: 40rem;
+  --radius-s: 8px;
+  --radius-m: 14px;
+  --radius-l: 20px;
+}
+
+/* ---------- Tokens: dark theme ---------- */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #0D1612;
+    --tint: #111D18;
+    --surface: #15231D;
+    --surface-2: #1B2C24;
+    --ink: #E7F0EA;        /* 14.9:1 on paper */
+    --ink-soft: #A2B5AA;   /* 8.1:1 */
+    --leaf: #63CF92;       /* 9.2:1 */
+    --button: #4CC383;
+    --button-hover: #6BD69B;
+    --button-ink: #062014; /* dark text on a bright button: 8.9:1 */
+    --rule: #22352B;
+    --rule-strong: #2F4839;
+    --marigold: #F2B33D;
+    --marigold-soft: rgba(242, 179, 61, 0.16);
+    --error: #FF8F85;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 32px rgba(0, 0, 0, 0.35);
+
+    /* Google's own dark-mode search ad colours. */
+    --ad-bg: #202124;
+    --ad-title: #8AB4F8;
+    --ad-text: #E8EAED;
+    --ad-desc: #BDC1C6;
+    --bar-track: rgba(231, 240, 234, 0.1);
+  }
 }
 
 /* ---------- Base ---------- */
@@ -90,6 +133,7 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   scroll-behavior: smooth;
+  scroll-padding-top: 1.5rem;
 }
 
 body {
@@ -101,6 +145,7 @@ body {
   line-height: 1.6;
   font-feature-settings: "kern", "liga";
   text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3 {
@@ -111,15 +156,16 @@ h1, h2, h3 {
 }
 
 p { margin: 0; text-wrap: pretty; }
+ul, ol { margin: 0; padding: 0; }
 
 a { color: var(--leaf); text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
-a:hover { color: var(--leaf-deep); text-decoration-thickness: 2px; }
+a:hover { text-decoration-thickness: 2px; }
 
 /* One visible focus style for every interactive element (keyboard users). */
 :focus-visible {
   outline: 3px solid var(--leaf);
   outline-offset: 3px;
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
 .visually-hidden {
@@ -134,6 +180,8 @@ a:hover { color: var(--leaf-deep); text-decoration-thickness: 2px; }
   border: 0;
 }
 
+.sprite { display: none; }
+
 .skip-link {
   position: absolute;
   left: var(--gutter);
@@ -146,7 +194,7 @@ a:hover { color: var(--leaf-deep); text-decoration-thickness: 2px; }
 }
 .skip-link:focus { top: 0.75rem; color: var(--paper); }
 
-/* ---------- Layout helpers ---------- */
+/* ---------- Layout ---------- */
 
 .wrap {
   width: 100%;
@@ -158,25 +206,76 @@ a:hover { color: var(--leaf-deep); text-decoration-thickness: 2px; }
 .section { padding-block: var(--section-space); }
 .section-tint { background: var(--tint); }
 
+/* Every section heading block is left-aligned with the page grid (the first
+   version centred some of them by accident). */
+.section-head {
+  max-width: var(--measure);
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+.section-head h2,
+.prose h2,
+.closing h2 {
+  font-size: var(--step-4);
+  font-weight: 800;
+}
+.section-lead {
+  margin-top: 0.875rem;
+  font-size: var(--step-1);
+  color: var(--ink-soft);
+}
+
 .prose { max-width: var(--measure); }
-.prose > * + * { margin-top: 1rem; }
+.prose > * + * { margin-top: 1.25rem; }
+.prose p { color: var(--ink-soft); }
 
 .two-col {
   display: grid;
-  gap: clamp(2rem, 5vw, 4rem);
-  align-items: start;
+  gap: clamp(2.5rem, 5vw, 4.5rem);
+  align-items: center;
 }
 @media (min-width: 60rem) {
-  .two-col { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); }
+  .two-col { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); }
 }
 
-/* Section headings share one rhythm; the gap below is set here, once. */
-.section h2 {
-  font-size: var(--step-4);
-  font-weight: 800;
-  margin-bottom: 1.5rem;
+/* Small inline SVG icons from the sprite in index.html. */
+.icon {
+  width: 1.375rem;
+  height: 1.375rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
-.prose h2 { margin-bottom: 0; }
+
+/* ---------- Buttons ---------- */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.25rem;
+  padding: 0.75rem 1.5rem;
+  font: inherit;
+  font-size: var(--step-1);
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--button-ink);
+  background: var(--button);
+  border: 0;
+  border-radius: var(--radius-s);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+.button:hover { background: var(--button-hover); color: var(--button-ink); }
+.button[aria-disabled="true"] { opacity: 0.7; cursor: progress; }
+
+.button-small {
+  min-height: 2.5rem;
+  padding: 0.5rem 1rem;
+  font-size: var(--step-0);
+}
 
 /* ---------- Header ---------- */
 
@@ -211,101 +310,149 @@ a:hover { color: var(--leaf-deep); text-decoration-thickness: 2px; }
   stroke-linejoin: round;
 }
 
-.header-cta {
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
   font-size: var(--step-0);
-  font-weight: 600;
-  white-space: nowrap;
+}
+.site-nav a:not(.button) {
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-weight: 500;
+}
+.site-nav a:not(.button):hover { color: var(--ink); }
+/* Phones: only the call to action fits next to the wordmark. */
+@media (max-width: 40rem) {
+  .site-nav a:not(.button) { display: none; }
 }
 
 /* ---------- Hero ---------- */
 
-.hero { padding-block: clamp(1.5rem, 5vw, 4rem) var(--section-space); }
+.hero { padding-block: clamp(2rem, 6vw, 4.5rem) var(--section-space); }
 
 .hero-grid {
   display: grid;
-  gap: clamp(2.5rem, 6vw, 4.5rem);
-  align-items: start;
+  gap: clamp(3rem, 6vw, 4.5rem);
+  align-items: center;
 }
 @media (min-width: 62rem) {
-  .hero-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .hero-grid { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); }
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  padding: 0.375rem 0.875rem 0.375rem 0.75rem;
+  font-size: var(--step--1);
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+}
+.status-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  background: var(--leaf);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--leaf) 22%, transparent);
 }
 
 .hero h1 {
   font-size: var(--step-5);
   font-weight: 850;
+  line-height: 1.04;
   letter-spacing: -0.035em;
-  max-width: 18ch;               /* keeps the headline to ~4 lines on desktop */
+  max-width: 15ch;
 }
 
 .lead {
-  margin-top: 1.25rem;
+  margin-top: 1.375rem;
   max-width: 34rem;
   font-size: var(--step-2);
   line-height: 1.5;
   color: var(--ink-soft);
 }
 
+.hero-points {
+  list-style: none;
+  margin-top: 1.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem 1.5rem;
+  font-size: var(--step-0);
+  color: var(--ink-soft);
+}
+.hero-points li { display: inline-flex; align-items: center; gap: 0.4rem; }
+.tick {
+  width: 1.125rem;
+  height: 1.125rem;
+  fill: none;
+  stroke: var(--leaf);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 /* ---------- Waitlist form ---------- */
 
 .waitlist {
   margin-top: 2rem;
-  max-width: 30rem;
+  max-width: 32rem;
   display: grid;
-  gap: 1rem;
+  gap: 0.875rem;
 }
+
+.waitlist-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+}
+.field-grow { flex: 1 1 15rem; }
 
 .field { display: grid; gap: 0.375rem; }
-
 .field label {
-  font-size: var(--step-0);
+  font-size: var(--step--1);
   font-weight: 600;
+  color: var(--ink-soft);
 }
-.optional { font-weight: 400; color: var(--ink-soft); }
+.optional { font-weight: 400; }
 
 .field input {
   width: 100%;
-  min-height: 3rem;              /* 48px: comfortable touch target */
-  padding: 0.625rem 0.875rem;
+  min-height: 3.25rem;           /* matches the button height */
+  padding: 0.625rem 1rem;
   font: inherit;
   font-size: var(--step-1);      /* >= 16px stops iOS zooming on focus */
   color: var(--ink);
-  background: var(--card);
-  border: 1.5px solid var(--rule);
+  background: var(--surface);
+  border: 1.5px solid var(--rule-strong);
   border-radius: var(--radius-s);
 }
-.field input::placeholder { color: #7D8A83; }
-.field input:hover { border-color: #AFC0AB; }
+.field input::placeholder { color: var(--ink-soft); opacity: 0.75; }
 .field input:focus-visible { outline-offset: 1px; border-color: var(--leaf); }
 .field input[aria-invalid="true"] { border-color: var(--error); }
+
+.field-secondary input {
+  min-height: 2.75rem;
+  font-size: var(--step-0);
+}
+
+.waitlist-row .button { flex: 0 0 auto; }
+@media (max-width: 30rem) {
+  .waitlist-row .button { flex: 1 1 100%; }
+}
 
 .field-error {
   font-size: var(--step-0);
   color: var(--error);
 }
 
-.button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 3.125rem;
-  padding: 0.75rem 1.5rem;
-  font: inherit;
-  font-size: var(--step-1);
-  font-weight: 700;
-  color: #FFFFFF;
-  background: var(--leaf);
-  border: 0;
-  border-radius: var(--radius-s);
-  text-decoration: none;
-  cursor: pointer;
-  transition: background-color 120ms ease;
-}
-.button:hover { background: var(--leaf-deep); color: #FFFFFF; }
-.button[aria-disabled="true"] { opacity: 0.7; cursor: progress; }
-.waitlist .button { justify-self: start; }
-
 .form-note {
-  font-size: var(--step-0);
+  font-size: var(--step--1);
   color: var(--ink-soft);
   line-height: 1.5;
 }
@@ -320,9 +467,10 @@ a:hover { color: var(--leaf-deep); text-decoration-thickness: 2px; }
 /* Shown in place of the form after a successful join (main.js). */
 .waitlist-done {
   margin-top: 2rem;
-  max-width: 30rem;
+  max-width: 32rem;
   padding: 1.25rem 1.375rem;
-  background: var(--card);
+  background: var(--surface);
+  border: 1px solid var(--rule);
   border-left: 4px solid var(--leaf);
   border-radius: var(--radius-s);
 }
@@ -337,9 +485,11 @@ a:hover { color: var(--leaf-deep); text-decoration-thickness: 2px; }
 
 .experiment {
   margin: 0;
-  padding: clamp(1rem, 3vw, 1.5rem);
-  background: var(--tint);
-  border-radius: var(--radius-m);
+  padding: clamp(1.125rem, 3vw, 1.625rem);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-l);
+  box-shadow: var(--shadow);
 }
 
 .experiment-head {
@@ -347,7 +497,7 @@ a:hover { color: var(--leaf-deep); text-decoration-thickness: 2px; }
   align-items: baseline;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.125rem;
 }
 .experiment-title { font-weight: 700; font-size: var(--step-0); }
 .experiment-week {
@@ -358,31 +508,46 @@ a:hover { color: var(--leaf-deep); text-decoration-thickness: 2px; }
 
 .ads {
   list-style: none;
-  margin: 0;
-  padding: 0;
   display: grid;
-  gap: 1rem;
+  gap: 1.125rem;
 }
 
 .ad-angle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
   font-size: var(--step--1);
   font-weight: 600;
   color: var(--ink-soft);
-  margin-bottom: 0.375rem;
+  margin-bottom: 0.4rem;
 }
+
+/* Only visible on the version that is currently winning. */
+.leading-label {
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--marigold-soft);
+  border-radius: 999px;
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+.ad.is-leading .leading-label { opacity: 1; }
 
 /* Mimics a Google search ad closely enough to be recognised at a glance. */
 .ad-card {
   padding: 0.875rem 1rem;
-  background: var(--card);
-  border: 1.5px solid transparent;
+  background: var(--ad-bg);
+  border: 1.5px solid var(--rule);
   border-radius: var(--radius-m);
   font-family: var(--font-ad);
   transition: border-color 400ms ease, box-shadow 400ms ease;
 }
 .ad-meta {
   font-size: 0.8125rem;
-  color: #202124;
+  color: var(--ad-text);
   line-height: 1.4;
 }
 .ad-sponsored { font-weight: 700; margin-right: 0.375rem; }
@@ -390,13 +555,13 @@ a:hover { color: var(--leaf-deep); text-decoration-thickness: 2px; }
   margin-top: 0.25rem;
   font-size: 1.125rem;
   line-height: 1.3;
-  color: #1A0DAB;              /* Google's ad headline blue */
+  color: var(--ad-title);
 }
 .ad-desc {
   margin-top: 0.25rem;
   font-size: 0.875rem;
   line-height: 1.45;
-  color: #4D5156;
+  color: var(--ad-desc);
 }
 
 /* Budget share bar. Width comes from --share (set by main.js per week).
@@ -404,8 +569,8 @@ a:hover { color: var(--leaf-deep); text-decoration-thickness: 2px; }
    is meaningful with JavaScript off or reduced motion on. */
 .share {
   margin-top: 0.5rem;
-  height: 0.5rem;
-  background: rgba(16, 35, 28, 0.08);
+  height: 0.4375rem;
+  background: var(--bar-track);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -429,7 +594,7 @@ a:hover { color: var(--leaf-deep); text-decoration-thickness: 2px; }
 .ad.is-leading .share-bar { background: var(--marigold); }
 
 .experiment figcaption {
-  margin-top: 1.125rem;
+  margin-top: 1.25rem;
   font-size: var(--step--1);
   line-height: 1.5;
   color: var(--ink-soft);
@@ -448,51 +613,83 @@ a:hover { color: var(--leaf-deep); text-decoration-thickness: 2px; }
   cursor: pointer;
 }
 
-/* ---------- Channels and controls (definition lists) ---------- */
+/* ---------- Five channels (cards with icon tiles) ---------- */
 
-.channels,
-.controls {
-  margin: 0;
+.feature-grid {
+  list-style: none;
   display: grid;
-  gap: 0;
+  gap: 1rem;
 }
-@media (min-width: 48rem) {
-  .channels,
-  .controls { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(2rem, 5vw, 4rem); }
+@media (min-width: 40rem) {
+  .feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 64rem) {
+  /* 6 columns lets 5 cards sit as 3 on the first row and 2 wider below. */
+  .feature-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .feature { grid-column: span 2; }
+  .feature:nth-child(4),
+  .feature:nth-child(5) { grid-column: span 3; }
 }
 
-.channel,
-.control {
-  padding-block: 1.25rem;
-  border-top: 1px solid var(--rule);
+.feature {
+  padding: 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-m);
 }
-
-.channel dt,
-.control dt {
+.feature .icon {
+  box-sizing: content-box;
+  padding: 0.625rem;
+  color: var(--leaf);
+  background: var(--surface-2);
+  border-radius: var(--radius-s);
+}
+.feature h3 {
+  margin-top: 1.125rem;
   font-size: var(--step-2);
   font-weight: 750;
-  letter-spacing: -0.01em;
 }
-.channel dd,
-.control dd {
-  margin: 0.375rem 0 0;
+.feature p {
+  margin-top: 0.5rem;
+  font-size: var(--step-0);
   color: var(--ink-soft);
-  max-width: 34rem;
 }
 
 /* ---------- Differentiator ---------- */
 
 .evidence {
-  padding-left: 1rem;
-  border-left: 3px solid var(--leaf);
-  font-size: var(--step-0);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.25rem 1.25rem;
+  align-items: start;
+  padding: 1.25rem 1.375rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-m);
+}
+.evidence-figure {
+  font-size: var(--step-4);
+  font-weight: 850;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--leaf);
+  font-variant-numeric: tabular-nums;
+}
+.evidence p:not(.evidence-figure) {
+  font-size: var(--step--1);
+  line-height: 1.55;
   color: var(--ink-soft);
+}
+@media (max-width: 30rem) {
+  .evidence { grid-template-columns: 1fr; }
 }
 
 .dimensions {
   padding: clamp(1.25rem, 3vw, 1.75rem);
-  background: var(--paper);
-  border-radius: var(--radius-m);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-l);
+  box-shadow: var(--shadow);
 }
 .dimensions-title { font-weight: 700; margin-bottom: 0.5rem; }
 .dimensions dl { margin: 0; }
@@ -507,22 +704,53 @@ a:hover { color: var(--leaf-deep); text-decoration-thickness: 2px; }
 }
 .chip {
   display: inline-block;
-  padding: 0.25rem 0.625rem;
+  padding: 0.3rem 0.7rem;
   font-size: var(--step--1);
   font-weight: 600;
-  background: var(--card);
+  background: var(--surface-2);
   border: 1px solid var(--rule);
-  border-radius: var(--radius-s);
+  border-radius: 999px;
 }
 
-/* ---------- Steps (a real sequence, so numbered) ---------- */
+/* ---------- Control (icon-left list, deliberately not cards) ---------- */
+
+.card-grid {
+  list-style: none;
+  display: grid;
+  gap: 0;
+  column-gap: clamp(2rem, 5vw, 4rem);
+}
+@media (min-width: 48rem) {
+  .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 1rem;
+  padding-block: 1.375rem;
+  border-top: 1px solid var(--rule);
+}
+.card .icon {
+  grid-row: span 2;
+  margin-top: 0.15rem;
+  color: var(--leaf);
+}
+.card h3 {
+  font-size: var(--step-2);
+  font-weight: 750;
+}
+.card p {
+  margin-top: 0.375rem;
+  color: var(--ink-soft);
+  font-size: var(--step-0);
+}
+
+/* ---------- Steps (a real sequence, so numbered and connected) ---------- */
 
 .steps {
   list-style: none;
-  margin: 0;
-  padding: 0;
   display: grid;
-  gap: 1.75rem;
+  gap: 2rem;
   counter-reset: step;
 }
 @media (min-width: 48rem) {
@@ -533,6 +761,7 @@ a:hover { color: var(--leaf-deep); text-decoration-thickness: 2px; }
 }
 
 .steps li {
+  position: relative;
   counter-increment: step;
   display: grid;
   gap: 0.5rem;
@@ -540,62 +769,107 @@ a:hover { color: var(--leaf-deep); text-decoration-thickness: 2px; }
 }
 .steps li::before {
   content: counter(step);
+  position: relative;
+  z-index: 1;
   display: grid;
   place-items: center;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-bottom: 0.5rem;
   font-weight: 800;
-  color: #FFFFFF;
-  background: var(--leaf);
+  color: var(--button-ink);
+  background: var(--button);
   border-radius: 50%;
 }
+/* Connecting line between the numbers on wide screens, so the four steps read
+   as one sequence rather than four separate facts. */
+@media (min-width: 70rem) {
+  .steps li:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 1.25rem;
+    left: 3rem;
+    right: calc(-1 * clamp(2rem, 5vw, 4rem) + 0.5rem);
+    height: 2px;
+    background: var(--rule-strong);
+  }
+}
 .steps h3 { font-size: var(--step-2); font-weight: 750; }
-.steps p { color: var(--ink-soft); }
+.steps p { color: var(--ink-soft); font-size: var(--step-0); }
+
+/* ---------- Who it's for ---------- */
+
+.sector-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+}
+.sector-list li {
+  padding: 0.625rem 1.125rem;
+  font-weight: 600;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+}
 
 /* ---------- Pricing ---------- */
 
-/* Narrow phones: the table scrolls inside its own box instead of
-   making the whole page scroll sideways. */
-.table-scroll { overflow-x: auto; }
-
-.pricing {
-  width: 100%;
-  min-width: 32rem;
-  border-collapse: collapse;
-  font-size: var(--step-1);
+.price-grid {
+  list-style: none;
+  display: grid;
+  gap: 1rem;
 }
-.pricing th,
-.pricing td {
-  padding: 0.875rem 1rem 0.875rem 0;
-  text-align: left;
-  vertical-align: top;
-  border-bottom: 1px solid var(--rule);
+@media (min-width: 40rem) {
+  .price-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-.pricing thead th {
-  font-size: var(--step-0);
-  font-weight: 600;
+@media (min-width: 64rem) {
+  .price-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.price-card {
+  padding: 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-m);
+}
+/* Highlighted because it is the tier that includes Google Ads, the product's
+   headline capability, not because it is "recommended". */
+.price-card-featured { border: 2px solid var(--leaf); }
+.price-card h3 { font-size: var(--step-1); font-weight: 750; }
+.price {
+  margin-top: 0.75rem;
   color: var(--ink-soft);
+  font-size: var(--step-0);
 }
-.pricing tbody th { font-weight: 750; white-space: nowrap; }
-.pricing td:last-child,
-.pricing th:last-child {
-  text-align: right;
-  padding-right: 0;
+.price-amount {
+  font-size: var(--step-4);
+  font-weight: 850;
+  letter-spacing: -0.03em;
+  color: var(--ink);
   font-variant-numeric: tabular-nums;
-  white-space: nowrap;
 }
-.pricing tbody td:last-child { font-weight: 700; }
-
-.table-note {
-  margin-top: 1rem;
-  max-width: var(--measure);
-  font-size: var(--step-0);
+.price-card p:last-child {
+  margin-top: 0.75rem;
   color: var(--ink-soft);
+  font-size: var(--step-0);
 }
 
 /* ---------- Closing ---------- */
 
-.closing .button { margin-top: 1.5rem; }
+.closing {
+  padding: clamp(2rem, 6vw, 3.5rem);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-l);
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.closing p {
+  max-width: 34rem;
+  margin: 1rem auto 0;
+  color: var(--ink-soft);
+}
+.closing .button { margin-top: 1.75rem; }
 
 /* ---------- Footer ---------- */
 
@@ -613,8 +887,6 @@ a:hover { color: var(--leaf-deep); text-decoration-thickness: 2px; }
 }
 .footer-links {
   list-style: none;
-  margin: 0;
-  padding: 0;
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem 1.5rem;
