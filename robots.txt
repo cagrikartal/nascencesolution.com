@@ -1,0 +1,5 @@
+# Let search engines index the public pages; the sitemap lists them.
+User-agent: *
+Allow: /
+
+Sitemap: https://nascencesolution.com/sitemap.xml

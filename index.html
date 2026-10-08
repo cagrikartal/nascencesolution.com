@@ -1,0 +1,399 @@
+<!doctype html>
+<!--
+  Nascence — public landing page and pilot waitlist.
+
+  PRODUCT REASON
+  This page has one job: get UK small-business owners to join the pilot
+  waitlist for the AI marketing agent built in ~/Projects/ai-marketing-agent.
+  It also serves as the company's public web presence (Claude for Startups and
+  similar programmes require a live website on the same domain as the company
+  email, cagri@nascencesolution.com).
+
+  HONESTY RULE (inherited from the product repo, docs/data-moat.md)
+  Every claim here is traceable to the product repo or the business plan.
+  - No customers, testimonials, logos or results are shown because none exist yet.
+  - The hero animation is labelled as an illustration, and the one measured
+    figure (83.5%) is labelled as a simulation, exactly as the repo requires.
+  - Pricing is labelled "planned" because ADR-0004 marks billing as
+    "to be revisited before launch".
+  If a sentence on this page cannot be traced to the repo or the plan, delete it.
+
+  TECHNICAL NOTES
+  - Plain HTML/CSS/JS, no framework (owner preference: vanilla over React).
+  - Hosted on GitHub Pages under the custom domain nascencesolution.com.
+  - Page loads make no third-party requests: fonts are self-hosted and there
+    is no analytics, so the privacy notice can truthfully say "no cookies, no
+    tracking". The only external call is the waitlist POST to Google Forms,
+    and only when a visitor submits it.
+  - The waitlist form works without JavaScript (plain POST to Google Forms).
+    JavaScript only upgrades it to an in-place confirmation.
+-->
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- SECURITY POLICY (meta tag because GitHub Pages cannot send custom headers)
+       default-src 'none'   deny anything not listed below
+       script/style/font 'self'   only our own files; no inline or third-party code
+       img-src 'self' data:       favicon
+       connect-src / form-action  docs.google.com only, for the waitlist post
+       base-uri 'none'            blocks <base> hijacking
+       If anything from another domain is ever added, add it here on purpose
+       and update the privacy notice in the same change. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src https://docs.google.com; form-action https://docs.google.com; base-uri 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Nascence | AI marketing agent for UK small businesses</title>
+  <meta name="description" content="An AI marketing agent that runs your Google Ads, website, social posts, email and search content, and learns which versions work. Join the pilot waitlist.">
+  <link rel="canonical" href="https://nascencesolution.com/">
+  <meta name="theme-color" content="#F4F6F2">
+  <meta name="color-scheme" content="light">
+
+  <!-- Open Graph: how the link looks when pasted into WhatsApp, LinkedIn, Slack.
+       No og:image yet: an image needs real product screenshots, which are a
+       launch task (see BEFORE-PRODUCTION.md). -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://nascencesolution.com/">
+  <meta property="og:title" content="Nascence | AI marketing agent for UK small businesses">
+  <meta property="og:description" content="Runs your ads, posts and pages, and learns which versions work. Join the pilot waitlist.">
+  <meta property="og:site_name" content="Nascence">
+
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <!-- Preload the one font file every visitor needs, so the headline does not
+       re-flow when the font arrives (font-display: swap is the fallback). -->
+  <link rel="preload" href="/fonts/schibsted-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/styles.css">
+  <!-- defer: the page is fully readable before the script runs; the script only
+       adds the animation and the in-place form confirmation. -->
+  <script src="/assets/main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap header-row">
+      <a class="wordmark" href="/" aria-label="Nascence home">
+        <!-- Seedling mark: "nascence" means coming into being. -->
+        <svg class="wordmark-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <path d="M16 29V15" />
+          <path d="M16 17c0-6 4-10 11-10 0 7-4 10-11 10Z" />
+          <path d="M16 20c0-5-3.5-8-10-8 0 6 3.5 8 10 8Z" />
+        </svg>
+        <span>Nascence</span>
+      </a>
+      <a class="header-cta" href="#join">Join the waitlist</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- HERO
+         Left: the promise and the waitlist form (the page's primary job).
+         Right: the product's distinguishing mechanic, shown rather than told:
+         several deliberately different versions of one ad, with budget moving
+         toward the one people respond to. -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <h1 id="hero-title">An AI marketing agent that runs your ads, and learns which ones work</h1>
+          <p class="lead">Built for UK small businesses that can't justify a £1,000-a-month agency. Describe your business once. It plans the campaign, writes the ads, builds the page they land on, publishes, and measures what happened.</p>
+
+          <!-- WAITLIST FORM (posts to a Google Form owned by the founder's Google account)
+               WHY GOOGLE FORMS: free, no extra account to create, and the
+               waitlist lands in the founder's own Google Forms responses
+               (exportable to Sheets). Form "Nascence waitlist",
+               edit ID 1YrzfAuSDkgI_dqiTZnvi8II6mJdTrocNV4-Iw_er6pQ.
+               - The input names "entry.<number>" are Google's field IDs for the
+                 "Email" and "Business website" questions. If those questions are
+                 deleted and re-created in Google Forms, the IDs change and these
+                 names must be updated, or sign-ups will silently stop arriving.
+               - Without JavaScript the browser posts straight to Google and shows
+                 Google's own "response recorded" page. With JavaScript, main.js
+                 posts in the background and confirms in place.
+               - novalidate: main.js shows plain-English messages instead of the
+                 browser's inconsistent bubbles.
+               - The honeypot input has no name, so it is never sent anywhere;
+                 main.js drops the submission if a bot fills it in. -->
+          <form id="join" class="waitlist" method="POST" novalidate
+                action="https://docs.google.com/forms/d/1YrzfAuSDkgI_dqiTZnvi8II6mJdTrocNV4-Iw_er6pQ/formResponse">
+            <p class="visually-hidden" aria-hidden="true">
+              <label>Leave this empty <input id="hp-company" tabindex="-1" autocomplete="off"></label>
+            </p>
+
+            <div class="field">
+              <label for="email">Work email</label>
+              <input id="email" name="entry.371359660" type="email" required maxlength="254"
+                     autocomplete="email" inputmode="email" spellcheck="false"
+                     placeholder="you@yourbusiness.co.uk" aria-describedby="email-error">
+              <p id="email-error" class="field-error" hidden></p>
+            </div>
+
+            <div class="field">
+              <label for="website">Business website <span class="optional">(optional)</span></label>
+              <!-- type="text", not type="url": owners type "mysite.co.uk" without
+                   https://, and type="url" would reject that. main.js normalises it. -->
+              <input id="website" name="entry.979921601" type="text" maxlength="200"
+                     autocomplete="url" inputmode="url" spellcheck="false"
+                     placeholder="yourbusiness.co.uk" aria-describedby="website-error">
+              <p id="website-error" class="field-error" hidden></p>
+            </div>
+
+            <button class="button" type="submit">Join the waitlist</button>
+            <p class="form-note">We're starting with a small pilot group of UK businesses and will email you when there's a place. Ask us to delete your details any time. <a href="/privacy/">Privacy notice</a></p>
+            <p class="form-status" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+
+        <!-- THE EXPERIMENT ILLUSTRATION
+             Copy is an EXAMPLE for a fictional joinery (yourjoinery.co.uk is a
+             placeholder, deliberately not a real business). The three versions
+             differ on exactly one taxonomy dimension from the product,
+             kernel/taxonomy.py ADS_DIMENSIONS "headline_angle": outcome / price /
+             speed. Bar widths are illustrative, never presented as data, and the
+             caption says so. -->
+        <figure class="experiment" aria-labelledby="experiment-caption">
+          <div class="experiment-head">
+            <p class="experiment-title">Three versions of one ad</p>
+            <p class="experiment-week" aria-hidden="true">Week <span data-week>4</span> of 4</p>
+          </div>
+
+          <ol class="ads">
+            <li class="ad" data-ad="a">
+              <p class="ad-angle">Version A leads with the result</p>
+              <div class="ad-card">
+                <p class="ad-meta"><span class="ad-sponsored">Sponsored</span> yourjoinery.co.uk</p>
+                <p class="ad-title">Fitted Wardrobes Made to Fit | Alcoves and Sloped Ceilings</p>
+                <p class="ad-desc">Every inch of awkward space used. Book a free home survey.</p>
+              </div>
+              <div class="share" aria-hidden="true"><span class="share-bar"></span></div>
+            </li>
+            <!-- is-leading is set in the markup so the no-JavaScript / reduced-motion
+                 view already shows the end state; main.js removes and re-adds it
+                 while playing the week-by-week sequence. -->
+            <li class="ad is-leading" data-ad="b">
+              <p class="ad-angle">Version B leads with the price</p>
+              <div class="ad-card">
+                <p class="ad-meta"><span class="ad-sponsored">Sponsored</span> yourjoinery.co.uk</p>
+                <p class="ad-title">Fitted Wardrobes, Fixed Quote | No Hidden Extras</p>
+                <p class="ad-desc">Know the full price before any work starts. Book a free home survey.</p>
+              </div>
+              <div class="share" aria-hidden="true"><span class="share-bar"></span></div>
+            </li>
+            <li class="ad" data-ad="c">
+              <p class="ad-angle">Version C leads with speed</p>
+              <div class="ad-card">
+                <p class="ad-meta"><span class="ad-sponsored">Sponsored</span> yourjoinery.co.uk</p>
+                <p class="ad-title">Fitted Wardrobes, Surveyed This Week | Local Joiners</p>
+                <p class="ad-desc">Measured in your home within days. Book a free home survey.</p>
+              </div>
+              <div class="share" aria-hidden="true"><span class="share-bar"></span></div>
+            </li>
+          </ol>
+
+          <figcaption id="experiment-caption">
+            The bars show each version's share of the budget. As results come in, the agent moves budget toward the version people respond to. This is an illustration, not data from a real business.
+            <button class="replay" type="button" data-replay hidden>Replay</button>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- WHAT IT DOES
+         The five channels the product actually has connectors for
+         (connectors/: ads, web, social, email, SEO). Descriptions are limited
+         to what the code does today; see the README of the product repo. -->
+    <section class="section" aria-labelledby="does-title">
+      <div class="wrap">
+        <h2 id="does-title">What it runs for you</h2>
+        <dl class="channels">
+          <div class="channel">
+            <dt>Google Ads</dt>
+            <dd>Splits the budget you set, writes the ads, sends them to Google and counts the enquiries they bring in.</dd>
+          </div>
+          <div class="channel">
+            <dt>A page for your ads</dt>
+            <dd>Builds the page your ads send people to, written from what you've confirmed about your business. You can change any word on it.</dd>
+          </div>
+          <div class="channel">
+            <dt>Social posts</dt>
+            <dd>Writes and publishes posts in your voice, then checks how each one did.</dd>
+          </div>
+          <div class="channel">
+            <dt>Email</dt>
+            <dd>Writes your campaigns and tracks which ones people open and click.</dd>
+          </div>
+          <div class="channel">
+            <dt>Search and AI answers</dt>
+            <dd>Writes articles for search, and checks every week whether AI assistants mention your business when people ask.</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- THE DIFFERENTIATOR
+         The core innovation claim from docs/data-moat.md: competitors publish
+         what the model wrote; this publishes a designed experiment. The
+         dimensions listed are the real ADS_DIMENSIONS from kernel/taxonomy.py. -->
+    <section class="section section-tint" aria-labelledby="learns-title">
+      <div class="wrap two-col">
+        <div class="prose">
+          <h2 id="learns-title">It doesn't write one ad. It runs an experiment.</h2>
+          <p>Most AI tools write a single ad and publish it. This agent writes several that differ on purpose, then moves your budget toward the version customers actually respond to. Every week it gets a clearer picture of what works for your kind of business.</p>
+          <!-- The only measured figure on the page. Wording mirrors README.md:
+               "74–91% of the achievable gap ... mean 83.5% ... Simulator figures —
+               the algorithm converging, not a client result". -->
+          <p class="evidence">Tested before it touches your money: against a market simulator built from published 2026 advertising benchmarks, the agent captured on average 83.5% of the gap between choosing ads at random and the best option available (five runs, 74% to 91%). This is a simulation, not a result from a real business.</p>
+        </div>
+        <div class="dimensions" aria-label="What changes between versions of an ad">
+          <p class="dimensions-title">What changes between versions</p>
+          <dl>
+            <div class="dimension">
+              <dt>What the headline leads with</dt>
+              <dd><span class="chip">The result</span><span class="chip">The price</span><span class="chip">Speed</span><span class="chip">Trust</span></dd>
+            </div>
+            <div class="dimension">
+              <dt>How the offer is framed</dt>
+              <dd><span class="chip">A saving</span><span class="chip">What you end up with</span><span class="chip">No risk to try</span></dd>
+            </div>
+            <div class="dimension">
+              <dt>Who sees it</dt>
+              <dd><span class="chip">Ready to buy</span><span class="chip">Comparing options</span><span class="chip">Just browsing</span></dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTROL
+         Business owners' main objection is handing an AI their ad budget
+         (business plan §12 risk table). Each point maps to a real control:
+         ADR-0004 direct billing, authorise_spend/SpendCap, Business.autopilot,
+         the "never invent" taxonomy guidance, and the encrypted credential vault. -->
+    <section class="section" aria-labelledby="control-title">
+      <div class="wrap">
+        <h2 id="control-title">You stay in charge of the money</h2>
+        <dl class="controls">
+          <div class="control">
+            <dt>Your account, your card</dt>
+            <dd>Ads run on your own Google Ads account and Google bills you directly. We never hold your ad money and never add a markup.</dd>
+          </div>
+          <div class="control">
+            <dt>A limit it can't raise</dt>
+            <dd>The agent works within the monthly budget you set. It can't raise that limit, connect an account or add a payment method. Those always need you.</dd>
+          </div>
+          <div class="control">
+            <dt>Autopilot, or your approval</dt>
+            <dd>Let it publish on its own, or have every ad and post wait for your approval first.</dd>
+          </div>
+          <div class="control">
+            <dt>Nothing made up</dt>
+            <dd>It writes from the business profile you confirmed. It won't invent reviews, quotes or results.</dd>
+          </div>
+          <div class="control">
+            <dt>Logins kept off the page</dt>
+            <dd>Access to your accounts is stored encrypted on our servers and is never sent to a browser.</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- HOW IT STARTS
+         A genuine sequence (onboarding order in the product: URL -> profile
+         extraction -> owner confirmation -> budget/spend cap -> weekly cycle
+         and monthly planning), so numbered steps are appropriate here. -->
+    <section class="section section-tint" aria-labelledby="steps-title">
+      <div class="wrap">
+        <h2 id="steps-title">How it starts</h2>
+        <ol class="steps">
+          <li>
+            <h3>Point it at your website</h3>
+            <p>It reads your own pages and drafts a profile of your business: what you sell, who to, and where.</p>
+          </li>
+          <li>
+            <h3>Check the profile</h3>
+            <p>Correct anything it got wrong. It won't act on a profile you haven't confirmed.</p>
+          </li>
+          <li>
+            <h3>Set your budget</h3>
+            <p>Choose a monthly ad budget and connect your Google Ads account.</p>
+          </li>
+          <li>
+            <h3>It gets to work</h3>
+            <p>Each week it writes, publishes, measures and shifts effort toward what's working. Each month it re-plans how the budget is split.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- WHO IT'S FOR — business plan §3.3 target customer and priority sectors. -->
+    <section class="section" aria-labelledby="who-title">
+      <div class="wrap prose">
+        <h2 id="who-title">Who it's for</h2>
+        <p>Owner-run UK businesses spending roughly £100 to £500 a month on marketing, who can't justify an agency: trades and home services, professional services, hospitality, independent shops and small online stores.</p>
+      </div>
+    </section>
+
+    <!-- PLANNED PRICING — business plan §8.1 tiers. Labelled "planned" on
+         purpose: prices are not final (ADR-0004 "to be revisited before launch")
+         and nobody is charged by joining the waitlist. -->
+    <section class="section section-tint" aria-labelledby="pricing-title">
+      <div class="wrap">
+        <h2 id="pricing-title">Planned pricing</h2>
+        <div class="table-scroll" tabindex="0" role="region" aria-labelledby="pricing-title">
+          <table class="pricing">
+            <thead>
+              <tr>
+                <th scope="col">Plan</th>
+                <th scope="col">What the agent runs</th>
+                <th scope="col">Per month</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Presence</th>
+                <td>A website, and your social posts</td>
+                <td>£39</td>
+              </tr>
+              <tr>
+                <th scope="row">Growth</th>
+                <td>Social posts, articles and search</td>
+                <td>£99</td>
+              </tr>
+              <tr>
+                <th scope="row">Full funnel</th>
+                <td>Every channel, including Google Ads</td>
+                <td>£249</td>
+              </tr>
+              <tr>
+                <th scope="row">Export</th>
+                <td>Every channel, across several countries and languages</td>
+                <td>£449</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-note">These are planned launch prices and may change before launch. Joining the waitlist costs nothing. Your ad spend is paid to Google directly, on top of the plan.</p>
+      </div>
+    </section>
+
+    <!-- CLOSING CALL TO ACTION — returns to the single hero form rather than
+         duplicating it, so there is one form to maintain and one set of
+         Google entry IDs to keep in sync. -->
+    <section class="section closing" aria-labelledby="closing-title">
+      <div class="wrap prose">
+        <h2 id="closing-title">Join the pilot</h2>
+        <p>We're onboarding a small group of UK businesses first. Leave your email and we'll get in touch when there's a place.</p>
+        <a class="button" href="#join" data-focus-email>Join the waitlist</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-row">
+      <p>© 2026 Nascence Solution</p>
+      <ul class="footer-links">
+        <li><a href="mailto:cagri@nascencesolution.com">cagri@nascencesolution.com</a></li>
+        <li><a href="/privacy/">Privacy notice</a></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+</html>
